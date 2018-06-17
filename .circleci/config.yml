@@ -1,0 +1,69 @@
+version: 2
+jobs:
+  checkout:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v2-dependencies-{{ checksum "yarn.lock" }}
+          - v2-dependencies-
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+            - node_modules
+
+  test:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Enforce Linting
+          command: yarn lint
+      - run:
+          name: Assert Changelog Update
+          command: ./node_modules/.bin/assert-changelog-update
+          name: Assert Version Bump
+          command: ./node_modules/.bin/assert-version-bump
+
+  pushchangelogandpublish:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Push Changelog Updates to Slack
+          command: ./node_modules/.bin/push-changelog-update
+          name: Publish package to NPM
+          command: ./node_modules/.bin/publish
+
+workflows:
+  version: 2
+  mainworkflow:
+    jobs:
+      - checkout
+      - test:
+          requires:
+            - checkout
+      - pushchangelogandpublish:
+          requires:
+            - checkout
+            - test
+          filters:
+            branches:
+              only: master
