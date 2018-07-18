@@ -33,11 +33,6 @@ jobs:
       - run:
           name: Enforce Linting
           command: yarn lint
-      - run:
-          name: Assert Changelog Update
-          command: ./node_modules/.bin/assert-changelog-update
-          name: Assert Version Bump
-          command: ./node_modules/.bin/assert-version-bump
 
   pushchangelogandpublish:
     working_directory: ~/project
