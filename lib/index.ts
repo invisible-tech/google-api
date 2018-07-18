@@ -18,7 +18,7 @@ const GOOGLE_KEYS = JSON.parse(
   Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
 )
 
-// Load JWT or UserRefreshClient from GOOGLE_KEYS environmental variable.
+// @ts-ignore: Load JWT or UserRefreshClient from GOOGLE_KEYS environmental variable. (they have incompatible types)
 const client: JWT = auth.fromJSON(GOOGLE_KEYS)
 client.scopes = scopes
 
