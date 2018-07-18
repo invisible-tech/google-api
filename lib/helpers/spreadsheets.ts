@@ -7,7 +7,7 @@ import {
   tail,
 } from 'lodash/fp'
 
-export const spreadsheetToJSON = (sheet: any) => {
+const spreadsheetToJSON = (sheet: any) => {
   const rows = get('data.values')(sheet)
   const header = first(rows)
   return flow(
@@ -19,7 +19,17 @@ export const spreadsheetToJSON = (sheet: any) => {
 }
 
 // @ts-ignore: non-specified parameters
-export const getSheet = ({ client, spreadsheetId, range }) =>
-  client.sheets('v4').spreadsheets.values
+const loadSheet = (googleAPIClient, spreadsheetId, range) =>
+  googleAPIClient.sheets('v4').spreadsheets.values
     .get({ spreadsheetId, range })
     .then(spreadsheetToJSON)
+
+const sheets = googleAPIClient => {
+  return {
+      getSheet: function (spreadsheetId, range) {
+        loadSheet(googleAPIClient, spreadsheetId, range)
+      }
+  }
+}
+
+export default sheets

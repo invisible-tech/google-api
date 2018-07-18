@@ -1,35 +1,41 @@
 import { config } from 'dotenv'
 import { auth, JWT, UserRefreshClient } from 'google-auth-library'
-import { google } from 'googleapis'
+import { google as googleAPIClient} from 'googleapis' 
 import { split } from 'lodash/fp'
-import { getSheet } from './helpers/spreadsheets'
+import sheets from './helpers/spreadsheets'
 
 const result = config()
-if (result.error) {
-  //
+
+const buildClient = (GOOGLE_SERVICE_ACCOUNT_B64, SCOPES) => {
+  if (GOOGLE_SERVICE_ACCOUNT_B64 === undefined)
+    if (typeof process.env.GOOGLE_SERVICE_ACCOUNT_B64 !== 'string')
+      throw Error('GOOGLE_SERVICE_ACCOUNT_B64 must be defined as environment variable or passed as parameter')
+    else 
+      GOOGLE_SERVICE_ACCOUNT_B64 = process.env.GOOGLE_SERVICE_ACCOUNT_B64
+
+  const scopes = split(',')(SCOPES || process.env.SCOPES || 'https://www.googleapis.com/auth/spreadsheets')
+  
+  const GOOGLE_KEYS = JSON.parse(
+    Buffer.from(GOOGLE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
+  )
+
+  // @ts-ignore: Load JWT or UserRefreshClient from GOOGLE_KEYS environmental variable. (they have incompatible types)
+  const client: JWT = auth.fromJSON(GOOGLE_KEYS)
+  client.scopes = scopes
+
+  return client
 }
-if (typeof process.env.GOOGLE_SERVICE_ACCOUNT_B64 !== 'string') {
-  throw Error('GOOGLE_SERVICE_ACCOUNT_B64 must be defined as environment variable')
-}
 
-const scopes = split(',')(process.env.SCOPES || 'https://www.googleapis.com/auth/spreadsheets')
-
-const GOOGLE_KEYS = JSON.parse(
-  Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
-)
-
-// @ts-ignore: Load JWT or UserRefreshClient from GOOGLE_KEYS environmental variable. (they have incompatible types)
-const client: JWT = auth.fromJSON(GOOGLE_KEYS)
-client.scopes = scopes
-
-const authorize = async () => {
+const authorize = async (GOOGLE_SERVICE_ACCOUNT_B64, SCOPES) => {
+  const client = buildClient(GOOGLE_SERVICE_ACCOUNT_B64, SCOPES)
   await client.authorize()
-  google.options({ auth: client })
-  return google
+  googleAPIClient.options({ auth: client })
+  return {
+    sheets: sheets(googleAPIClient)
+  }
 }
 
 export default {
-  authorize,
-  getSheet
+  authorize
 }
 
