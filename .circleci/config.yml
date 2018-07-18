@@ -11,8 +11,8 @@ jobs:
           - v2-dependencies-{{ checksum "yarn.lock" }}
           - v2-dependencies-
       - run:
-          name: Install Dependencies
-          command: yarn install
+          name: Install Dependencies and Build Package
+          command: yarn install && yarn build
       - save_cache:
           paths:
             - node_modules
