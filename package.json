@@ -7,14 +7,19 @@
   "engines": {
     "node": "^8.9.0"
   },
-  "dependencies": {
+  "devDependencies": {
     "@invisible/changelog-update": "^1.1.0",
     "@invisible/eslint-config": "^1.3.4",
-    "dotenv": "^5.0.1",
-    "eslint": "^4.19.1",
+    "@invisible/publish": "^2.0.1",
+    "eslint": "^4.19.1"
+  },
+  "dependencies": {
     "google-auth-library": "^1.5.0",
     "googleapis": "^31.0.2",
     "lodash": "^4.17.10"
+  },
+  "optionalDependencies": {
+    "dotenv": "^5.0.1"
   },
   "main": "src/index.js",
   "scripts": {
