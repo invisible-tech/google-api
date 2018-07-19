@@ -63,9 +63,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/build/lib/.npmrc
       - run:
           name: Publish package
-          command: |
-            cd ~/project/build/lib
-            npm publish --access=public
+          command: npm publish --access=public
       - run:
           name: Push Changelog Updates to Slack
           command: ./node_modules/.bin/push-changelog-update
