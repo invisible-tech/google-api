@@ -1,2 +1,2 @@
 *v0.0.1*
-_Feat: bootstrap `@invisible/google-auth` package_
+_Feat: bootstrap `@invisible/google-api` package_
