@@ -1,0 +1,93 @@
+version: 2
+jobs:
+  checkout:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v2-dependencies-{{ checksum "yarn.lock" }}
+          - v2-dependencies-
+      - run:
+          name: Install Dependencies and Build Package
+          command: yarn install && yarn build
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+            - node_modules
+
+  build:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    environment:
+      NODE_ENV: production
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Build TypeScript code
+          command: yarn build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - build/*
+
+  test:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Enforce Linting
+          command: yarn lint
+
+  publish:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/build/lib/.npmrc
+      - run:
+          name: Copy package.json
+          command: cp ~/project/build/lib/package.json ~/project/build/lib/
+      - run:
+          name: Publish package
+          command: |
+            cd ~/project/build/lib
+            npm publish --access=public
+      - run:
+          name: Push Changelog Updates to Slack
+          command: ./node_modules/.bin/push-changelog-update
+
+workflows:
+  version: 2
+  mainworkflow:
+    jobs:
+      - checkout
+      - build:
+          requires:
+            - checkout
+      - test:
+          requires:
+            - build
+      - publish:
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only: master

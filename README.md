@@ -1,29 +1,32 @@
-# Upwork Scraper
+# @invisible/google-api
 
-This package gets the first page of jobs applications on Upwork and append into a spreadsheet.
+This package wraps the complexity of Google's auth for service workers and returns authorized [`googleapis`](http://google.github.io/google-api-nodejs-client/) with some helpers.
 
-How to use this package?
+## How to use this package?
 
-1. Set the environmental variables:
-```
-NODE_ENV
-
-# Google Credentials
-GOOGLE_SERVICE_ACCOUNT_B64
-KEYWORDS_SPREADSHEET_ID
-
-# Upwork Credentials
-CONSUMER_KEY
-CONSUMER_SECRET
-
-ACCESS_TOKEN
-ACCESS_SECRET
-```
-
-* If it expires or you don't have the `ACCESS_TOKEN` or `ACCESS_SECRET` environmental variables, run `yarn get-access-token`.
-
-2. Run:
-
+1. You need to pass auth token and scopes(optional, spreadsheets by default) as parameters to `.authorize()` or as environmental variables:
 ```bash
-$ node upwork.js
+# GOOGLE_SERVICE_ACCOUNT_B64 is the JSON service worker credentials encoded in base64.
+GOOGLE_SERVICE_ACCOUNT_B64
+# SCOPES is a comma separated list of scopes.
+SCOPES
+```
+
+- You can add environmental variables to your `.env` file (`env.sample` as example)
+
+2. API:
+
+```typescript
+import google from '@invisible/google-api'
+
+const { sheets } = await google.authorize(GOOGLE_SERVICE_ACCOUNT_B64, SCOPES)
+
+sheets.getSheet(spreadsheetId, range)
+
+```
+
+## Publish to NPM
+```bash
+npm run build
+npm publish
 ```
