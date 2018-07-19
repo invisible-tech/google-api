@@ -1,16 +1,21 @@
 {
   "name": "@invisible/google-api",
-  "author": "Invisible Technologies",
+  "author": "Invisible Technologies Inc. <engineering@invisible.email>",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
+  "main": "build/lib/index.js",
+  "types" : "build/lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint --cache -f node_modules/eslint-formatter-pretty --ignore-path .gitignore ."
+  },
   "engines": {
     "node": "^8.9.0"
   },
   "devDependencies": {
     "@invisible/changelog-update": "^1.1.0",
     "@invisible/eslint-config": "^1.3.4",
-    "@invisible/publish": "^2.0.1",
     "@types/dotenv": "^4.0.3",
     "@types/lodash": "^4.14.112",
     "eslint": "^4.19.1",
@@ -22,14 +27,8 @@
     "googleapis": "^31.0.2",
     "lodash": "^4.17.10"
   },
-  "main": "dist/index.js",
-  "types" : "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "lint": "eslint --cache -f node_modules/eslint-formatter-pretty --ignore-path .gitignore ."
-  },
   "changelogUpdate": {
     "iconEmoji": ":eyeglasses:",
-    "slackbotName": "Invisible Google Auth"
+    "slackbotName": "Invisible Google API"
   }
 }
