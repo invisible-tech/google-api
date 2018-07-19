@@ -23,6 +23,23 @@ jobs:
             - ./*
             - node_modules
 
+  build:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8
+    environment:
+      NODE_ENV: production
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Build TypeScript code
+          command: yarn build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - build/*
+
   test:
     working_directory: ~/project
     docker:
@@ -34,7 +51,7 @@ jobs:
           name: Enforce Linting
           command: yarn lint
 
-  pushchangelogandpublish:
+  publish:
     working_directory: ~/project
     docker:
       - image: circleci/node:8
@@ -42,23 +59,35 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/build/lib/.npmrc
+      - run:
+          name: Copy package.json
+          command: cp ~/project/build/lib/package.json ~/project/build/lib/
+      - run:
+          name: Publish package
+          command: |
+            cd ~/project/build/lib
+            npm publish --access=public
+      - run:
           name: Push Changelog Updates to Slack
           command: ./node_modules/.bin/push-changelog-update
-          name: Publish package to NPM
-          command: ./node_modules/.bin/publish
 
 workflows:
   version: 2
   mainworkflow:
     jobs:
       - checkout
+      - build:
+          requires:
+            - checkout
       - test:
           requires:
-            - checkout
-      - pushchangelogandpublish:
+            - build
+      - publish:
           requires:
-            - checkout
             - test
+            - build
           filters:
             branches:
               only: master
