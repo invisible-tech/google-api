@@ -24,9 +24,9 @@ const loadSheet = (googleAPIClient, spreadsheetId, range) =>
     .get({ spreadsheetId, range })
     .then(spreadsheetToJSON)
 
-const sheets = googleAPIClient => {
+const sheets = (googleAPIClient: any) => {
   return {
-      getSheet: function (spreadsheetId, range) {
+      getSheet: function (spreadsheetId: string, range: string) {
         loadSheet(googleAPIClient, spreadsheetId, range)
       }
   }
