@@ -62,9 +62,6 @@ jobs:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/build/lib/.npmrc
       - run:
-          name: Copy package.json
-          command: cp ~/project/build/lib/package.json ~/project/build/lib/
-      - run:
           name: Publish package
           command: |
             cd ~/project/build/lib
