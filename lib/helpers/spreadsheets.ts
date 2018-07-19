@@ -12,7 +12,7 @@ const spreadsheetToJSON = (sheet: any) => {
   const header = first(rows)
   return flow(
     // @ts-ignore: typing issues
-    tail, 
+    tail,
     // @ts-ignore: typing issues
     map(zipObject(header)),
   )(rows)

@@ -6,7 +6,7 @@ This package wraps the complexity of Google's auth for service workers and retur
 
 1. You need to pass auth token and scopes(optional, spreadsheets by default) as parameters to `.authorize()` or as environmental variables:
 ```bash
-# GOOGLE_SERVICE_ACCOUNT_B64 is the json service worker credentials encoded in base64.
+# GOOGLE_SERVICE_ACCOUNT_B64 is the JSON service worker credentials encoded in base64.
 GOOGLE_SERVICE_ACCOUNT_B64
 # SCOPES is a comma separated list of scopes.
 SCOPES

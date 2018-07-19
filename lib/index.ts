@@ -14,7 +14,7 @@ const buildClient = (GOOGLE_SERVICE_ACCOUNT_B64, SCOPES) => {
       GOOGLE_SERVICE_ACCOUNT_B64 = process.env.GOOGLE_SERVICE_ACCOUNT_B64
 
   const scopes = split(',')(SCOPES || process.env.SCOPES || 'https://www.googleapis.com/auth/spreadsheets')
-  
+
   const GOOGLE_KEYS = JSON.parse(
     Buffer.from(GOOGLE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
   )
@@ -38,4 +38,3 @@ const authorize = async (GOOGLE_SERVICE_ACCOUNT_B64, SCOPES) => {
 export default {
   authorize
 }
-

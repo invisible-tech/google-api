@@ -73,7 +73,7 @@ lcov.info
 .eslint-cache
 .eslintcache
 
-
+build
 tmp/*
 !tmp/.gitkeep
 
