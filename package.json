@@ -2,7 +2,7 @@
   "name": "@invisible/google-api",
   "author": "Invisible Technologies Inc. <engineering@invisible.email>",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "build/lib/index.js",
   "types" : "build/lib/index.d.ts",
