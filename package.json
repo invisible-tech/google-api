@@ -11,7 +11,7 @@
     "lint": "eslint --cache -f node_modules/eslint-formatter-pretty --ignore-path .gitignore ."
   },
   "engines": {
-    "node": "^8.9.0"
+    "node": "^8"
   },
   "devDependencies": {
     "@invisible/changelog-update": "^1.1.0",
